@@ -1,3 +1,33 @@
+import math
+
+
+def _list_primes(n):
+    numbers = list(range(2, n + 1))
+    i = 0
+    candidate = numbers[0]
+
+    while candidate <= math.sqrt(n):
+        numbers[numbers.index(candidate) + candidate::candidate] = [0] * ((n // candidate) - 1)
+        i += 1
+        while numbers[i] == 0:
+            i += 1
+        candidate = numbers[i]
+    return [x for x in numbers if x != 0]
+
+
+def get_primes_on_interval(m, n):
+    if m < 2:
+        m = 2
+    numbers = list(range(m, n + 1))
+    primes = _list_primes(int(math.sqrt(n)))
+
+    for prime in primes:
+        reminder = m % prime
+        start_pos = 0 if reminder == 0 else prime - reminder
+        numbers[start_pos::prime] = [0] * len(numbers[start_pos::prime])
+    return [x for x in primes if x >= m] + [x for x in numbers if x != 0]
+
+
 # import threading
 # import time
 #
@@ -806,4 +836,141 @@ import sys
 #
 # print(len(list(filter(is_triangle_word, words))))
 
+# import math
+#
+# th = 1000000
+#
+# list_of_primes = set()
+# for num in range(2, th):
+#    sqrt = math.sqrt(num)
+#    for i in range(2, int(sqrt) + 1):
+#        if num % i == 0:
+#            break
+#    else:
+#        list_of_primes.add(num)
+#
+# print('Calculated list of primes')
+#
+# def list_divisors(num):
+#    divs = set()
+#    sqrt = math.sqrt(num)
+#    for i in range(2, int(sqrt) + 1):
+#        if num % i == 0:
+#            divs.add(i)
+#            divs.add(num // i)
+#    return divs
+#
+# def solve(n):
+#    i = 4
+#    while i < th:
+#        divs = list_divisors(i)
+#        if len(divs & list_of_primes) == n:
+#            for j in range(i+1, i+n):
+#                if not len(list_divisors(j) & list_of_primes) == n:
+#                    break
+#            else:
+#                return i
+#        i += 1
+#
+# print(solve(4))
 
+# print(str(sum(i**i for i in range(1, 1001)))[-10:])
+
+# import math
+# from itertools import combinations
+#
+# list_of_primes = []
+# for num in range(1000, 10000):
+#   sqrt = math.sqrt(num)
+#   for i in range(2, int(sqrt) + 1):
+#       if num % i == 0:
+#           break
+#   else:
+#       list_of_primes.append(num)
+
+# print(list(filter(lambda x : set(str(x[0])) == set(str(x[1])) and set(str(x[0])) == set(str(x[2])) and x[2] - x[1] == x[1] - x[0], combinations(list_of_primes, 3))))
+
+
+# list_of_primes = get_primes_on_interval(1, 1000000)
+# print('Calculated list of primes, length = {}'.format(len(list_of_primes)))
+#
+#
+# def check(i, j):
+#    c = 0
+#    num = list_of_primes[i]
+#    while num > 0:
+#        num -= list_of_primes[j]
+#        c += 1
+#        j -= 1
+#    if num == 0:
+#        return (list_of_primes[i], c)
+#
+#
+# l = []
+# for i in reversed(range(1, len(list_of_primes))):
+#    if i % 100 == 0:
+#        print(i)
+#    for j in reversed(range(1, i)):
+#        n = check(i, j)
+#        if n:
+#            l.append(n)
+#
+# print(sorted(l, key=lambda x: x[1])[::-1])
+
+
+# s = 0
+# set1 = {1}
+# set89 = {89}
+# for i in range(2, 10000000):
+#    my_set = set()
+#    n = i
+#    while True:
+#        my_set.add(n)
+#        if n in set1:
+#            set1.update(my_set)
+#            break
+#        if n in set89:
+#            set89.update(my_set)
+#            s += 1
+#            break
+#        n = sum(int(c)**2 for c in str(n))
+# print(s)
+
+# from fractions import Fraction
+# seq = [2] + [el for lst in [(1, 2*i, 1) for i in range(1, 35)] for el in lst]
+#
+# def calculate(l):
+#    if len(l) == 1:
+#        return l[0]
+#    return l[0] + Fraction(1, calculate(l[1:]))
+
+# n = Fraction(str(calculate(seq[:100]))).numerator
+#
+# print(n, sum(int(c) for c in str(n)))
+
+# import roman
+# import string
+#
+# nums = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
+#
+# def fromRoman(s):
+#    i = 0
+#    num = 0
+#    while i < len(s):
+#        if i == len(s) - 1:
+#            num += nums[s[i]]
+#        elif nums[s[i]] < nums[s[i+1]]:
+#            num += nums[s[i+1]] - nums[s[i]]
+#            i += 1
+#        else:
+#            num += nums[s[i]]
+#        i += 1
+#    return num
+#
+# sum = 0
+# with open('names.txt') as f:
+#    for l in f.readlines():
+#        l = l.rstrip()
+#        sum += len(l) - len(roman.toRoman(fromRoman(l)))
+#
+# print(sum)
