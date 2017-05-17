@@ -94,9 +94,6 @@ def get_primes_on_interval(m, n):
 # else:
 #     print("Nope, it's not there")
 
-import logging
-import sys
-
 # l = logging.getLogger(__name__)
 
 # logging.basicConfig(level=logging.DEBUG, format='%(asctime)s \t%(levelname)s\t%(name)s\t%(message)s', filename='1.txt')
@@ -974,3 +971,32 @@ import sys
 #        sum += len(l) - len(roman.toRoman(fromRoman(l)))
 #
 # print(sum)
+
+# import itertools
+# import functools
+#
+# primes = get_primes_on_interval(0, 1000000)
+#
+#
+# def max_family(number):
+#     def repl(number, digits, n):
+#         i = int(''.join([str(number)[i] if i not in digits else str(n) for i in range(len(str(number)))]))
+#         if len(str(i)) == len(str(number)) and i in primes:
+#             return i
+#         return 0
+#
+#     return [[repl(number, digits, i) for i in range(10)] for j in range(1, len(str(number))) for digits in itertools.combinations(range(len(str(number))), j)]
+#
+#
+# for i in primes[11320:]:
+#     m = max_family(i)
+#     print(i)
+#     b = False
+#     for mm in m:
+#         mmm = list(filter(lambda x: x, mm))
+#         if len(mmm) >= 8:
+#             b = True
+#             ans = min(mmm)
+#     if b:
+#         print('----->', ans)
+#         break
