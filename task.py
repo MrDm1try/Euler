@@ -1000,3 +1000,364 @@ def get_primes_on_interval(m, n):
 #     if b:
 #         print('----->', ans)
 #         break
+
+
+# def num_to_digits(n):
+#     return sorted([c for c in str(n)])
+#
+#
+# i = 1
+# p = num_to_digits(i)
+# while p != num_to_digits(i*2)\
+#         or p != num_to_digits(i*3)\
+#         or p != num_to_digits(i*4)\
+#         or p != num_to_digits(i*5)\
+#         or p != num_to_digits(i*6):
+#     i += 1
+#     p = num_to_digits(i)
+#
+# print(i)
+
+# def nCr(n,r):
+#     f = math.factorial
+#     return f(n) // f(r) // f(n-r)
+#
+# i = 0
+# for n in range(1, 101):
+#     for r in range(1, n):
+#         if nCr(n, r) > 1000000:
+#             i += 1
+#
+# print(i)
+
+
+# class Card:
+#     def __init__(self, card):
+#         card_num = {'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+#         self.value = card_num[card[0]] if card[0] in card_num else int(card[0])
+#         self.suit = card[1]
+#
+#     def __repr__(self):
+#         values = {2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven', 8: 'Eught', 9: 'Nine', 10: 'Ten',
+#                   11: 'Jack', 12: 'Queen', 13: 'King', 14: 'Ace'}
+#         suits = {'H': 'Hearts', 'S': 'Spades', 'D': 'Diamonds', 'C': 'Clubs'}
+#         return '{} of {}'.format(values[self.value], suits[self.suit])
+#
+#     def __lt__(self, other):
+#         return self.value < other.value
+#
+#     def __gt__(self, other):
+#         return self.value > other.value
+#
+#
+# class Hand:
+#     def __init__(self, ls):
+#         self.cards = sorted([Card(c) for c in ls], reverse=True)
+#
+#     def _flush(self):
+#         return self.cards[0].suit == self.cards[1].suit == self.cards[2].suit == \
+#                self.cards[3].suit == self.cards[4].suit
+#
+#     def _straight(self):
+#         return self.cards[0].value == self.cards[1].value + 1 == self.cards[2].value + 2 == \
+#                self.cards[3].value + 3 == self.cards[4].value + 4
+#
+#     def get_hand(self):
+#         # check straight/royal flush
+#         if self._straight() and self._flush():
+#             return [8, self.cards[0].value]
+#
+#         # check four of a kind
+#         if self.cards[0].value == self.cards[1].value == self.cards[2].value == self.cards[3].value:
+#             return [7, self.cards[0].value]
+#         if self.cards[1].value == self.cards[2].value == self.cards[3].value == self.cards[4].value:
+#             return [7, self.cards[1].value]
+#
+#         # check full house
+#         if self.cards[0].value == self.cards[1].value == self.cards[2].value and \
+#                         self.cards[3].value == self.cards[4].value:
+#             return [6, self.cards[0].value]
+#         if self.cards[0].value == self.cards[1].value and \
+#                                 self.cards[2].value == self.cards[3].value == self.cards[4].value:
+#             return [6, self.cards[2].value]
+#
+#         # check flush
+#         if self._flush():
+#             return [5] + [c.value for c in self.cards]
+#
+#         # check straight
+#         if self._straight():
+#             return [4, self.cards[0].value]
+#
+#         # check three of a kind
+#         if self.cards[0].value == self.cards[1].value == self.cards[2].value:
+#             return [3, self.cards[0].value]
+#         if self.cards[1].value == self.cards[2].value == self.cards[3].value:
+#             return [3, self.cards[1].value]
+#         if self.cards[2].value == self.cards[3].value == self.cards[4].value:
+#             return [3, self.cards[2].value]
+#
+#         # check two pairs
+#         if self.cards[0].value == self.cards[1].value and self.cards[2].value == self.cards[3].value:
+#             return [2, self.cards[0].value, self.cards[2].value, self.cards[4].value]
+#         if self.cards[0].value == self.cards[1].value and self.cards[3].value == self.cards[4].value:
+#             return [2, self.cards[0].value, self.cards[3].value, self.cards[2].value]
+#         if self.cards[1].value == self.cards[2].value and self.cards[3].value == self.cards[4].value:
+#             return [2, self.cards[1].value, self.cards[3].value, self.cards[0].value]
+#
+#         # check one pair
+#         if self.cards[0].value == self.cards[1].value:
+#             return [1, self.cards[0].value, self.cards[2].value, self.cards[3].value, self.cards[4].value]
+#         if self.cards[1].value == self.cards[2].value:
+#             return [1, self.cards[1].value, self.cards[0].value, self.cards[3].value, self.cards[4].value]
+#         if self.cards[2].value == self.cards[3].value:
+#             return [1, self.cards[2].value, self.cards[0].value, self.cards[1].value, self.cards[4].value]
+#         if self.cards[3].value == self.cards[4].value:
+#             return [1, self.cards[3].value, self.cards[0].value, self.cards[1].value, self.cards[2].value]
+#
+#         # kicker
+#         return [0] + [c.value for c in self.cards]
+#
+#
+# i1 = 0
+# i2 = 0
+# with open('poker.txt', 'r') as f:
+#     for l in f.readlines():
+#         deal = l.split()
+#         h1 = Hand(deal[:5]).get_hand()
+#         h2 = Hand(deal[5:]).get_hand()
+#         res = 0
+#         while True:
+#             if h1[res] == h2[res]:
+#                 res += 1
+#             elif h1[res] > h2[res]:
+#                 i1 += 1
+#                 break
+#             else:
+#                 i2 += 1
+#                 break
+# print(i1, i2, i1 + i2)
+
+
+# def reverse(num):
+#     return int(''.join([c for c in reversed(str(num))]))
+#
+#
+# def is_palindrome(num):
+#     return num == reverse(num)
+#
+#
+# def is_Lychrel(num):
+#     for i in range(50):
+#         num += reverse(num)
+#         if is_palindrome(num):
+#             return False
+#     return True
+#
+#
+# print(len([0 for i in range(1, 10000) if is_Lychrel(i)]))
+
+# def dig_sum(num):
+#     return sum(int(c) for c in str(num))
+#
+# print(max(dig_sum(a**n) for a in range(1, 100) for n in range(1, 100)))
+
+
+
+# def h2s(hours):
+#     fradrag = 5659
+#     netto = hours*179
+#     return netto*0.92 - (netto*0.92 - fradrag)*0.38 + (6015*0.62 if netto < 12000 else 0)
+#
+# max_su = h2s(67)
+# print(max_su)
+# i = 68
+# while h2s(i) < max_su:
+#     i += 1
+# print(i, h2s(i))
+
+
+# from fractions import Fraction
+#
+#
+# def create_fractions(n):
+#     l = []
+#     f = Fraction(1, 2)
+#     for i in range(n):
+#         l.append(1 + f)
+#         f = Fraction(1, 2 + f)
+#     return l
+#
+#
+# print(len(list(filter(lambda f: len(str(f.numerator)) > len(str(f.denominator)), create_fractions(1000)))))
+
+
+class Spiral():
+    def __init__(self, n):
+        self.primes = get_primes_on_interval(0, 10000000)
+        print('Got primes')
+        self.layers = 1
+        self.side_length = 1
+        self.matrix = [[1]]
+        self.x = self.y = 0
+        for _ in range(n - 1):
+            self.add_layer()
+
+    def add_layer(self):
+        for i, line in enumerate(self.matrix):
+            self.matrix[i] = [0] + line + [0]
+        self.matrix = [[0] * len(self.matrix[0])] + self.matrix + [[0] * len(self.matrix[0])]
+        self.layers += 1
+        self.side_length += 2
+        self.x += 1
+        self.y += 1
+        n = self.matrix[self.x][self.y] + 1
+        self.y += 1
+        for _ in range(self.side_length - 1):
+            self.matrix[self.x][self.y] = n
+            n += 1
+            self.x -= 1
+        self.x += 1
+        self.y -= 1
+        for _ in range(self.side_length - 1):
+            self.matrix[self.x][self.y] = n
+            n += 1
+            self.y -= 1
+        self.y += 1
+        self.x += 1
+        for _ in range(self.side_length - 1):
+            self.matrix[self.x][self.y] = n
+            n += 1
+            self.x += 1
+        self.x -= 1
+        self.y += 1
+        for _ in range(self.side_length - 1):
+            self.matrix[self.x][self.y] = n
+            n += 1
+            self.y += 1
+        self.y -= 1
+
+    def get_ratio(self):
+        if self.matrix[-1][-1] > self.primes[-1]:
+            raise RuntimeError('Not enough primes')
+        s = set()
+        for i in range(self.side_length):
+            s.add(self.matrix[i][i])
+            s.add(self.matrix[i][self.side_length - 1 - i])
+        return (len(s.intersection(self.primes)) / len(s)) * 100
+
+    def __str__(self):
+        s = ""
+        for line in self.matrix:
+            s += '\t'.join(map(str, line)) + "\n"
+        return s
+
+
+# s = Spiral(750)
+# ratio = s.get_ratio()
+# while ratio >= 9.5:
+#     s.add_layer()
+#     ratio = s.get_ratio()
+# print(ratio, s.side_length)
+# s = Spiral(4)
+# ratio = s.get_ratio()
+# print(ratio, s.layers)
+
+# def is_prime(num):
+#     if num <= 1:
+#         return False
+#     if num == 2:
+#         return True
+#     if num % 2 == 0:
+#         return False
+#     if num % 3 == 0:
+#         return False
+#
+#     c = 5
+#     while c**2 <= num:
+#         if n % c == 0 or n % (c + 2) == 0:
+#             return False
+#         c += 6
+#     return True
+#
+#
+# n = 9
+# no_of_primes = 3
+# step = 2
+# while no_of_primes / ((step * 2) + 1) > 0.10:
+#     step += 2
+#     for _ in range(3):
+#         n += step
+#         if is_prime(n):
+#             no_of_primes += 1
+#     n += step
+#
+# print(step + 1)
+
+# mess = [79, 59, 12, 2, 79, 35, 8, 28, 20, 2, 3, 68, 8, 9, 68, 45, 0, 12, 9, 67, 68, 4, 7, 5, 23, 27, 1, 21, 79, 85, 78,
+#         79, 85, 71, 38, 10, 71, 27, 12, 2, 79, 6, 2, 8, 13, 9, 1, 13, 9, 8, 68, 19, 7, 1, 71, 56, 11, 21, 11, 68, 6, 3,
+#         22, 2, 14, 0, 30, 79, 1, 31, 6, 23, 19, 10, 0, 73, 79, 44, 2, 79, 19, 6, 28, 68, 16, 6, 16, 15, 79, 35, 8, 11,
+#         72, 71, 14, 10, 3, 79, 12, 2, 79, 19, 6, 28, 68, 32, 0, 0, 73, 79, 86, 71, 39, 1, 71, 24, 5, 20, 79, 13, 9, 79,
+#         16, 15, 10, 68, 5, 10, 3, 14, 1, 10, 14, 1, 3, 71, 24, 13, 19, 7, 68, 32, 0, 0, 73, 79, 87, 71, 39, 1, 71, 12,
+#         22, 2, 14, 16, 2, 11, 68, 2, 25, 1, 21, 22, 16, 15, 6, 10, 0, 79, 16, 15, 10, 22, 2, 79, 13, 20, 65, 68, 41, 0,
+#         16, 15, 6, 10, 0, 79, 1, 31, 6, 23, 19, 28, 68, 19, 7, 5, 19, 79, 12, 2, 79, 0, 14, 11, 10, 64, 27, 68, 10, 14,
+#         15, 2, 65, 68, 83, 79, 40, 14, 9, 1, 71, 6, 16, 20, 10, 8, 1, 79, 19, 6, 28, 68, 14, 1, 68, 15, 6, 9, 75, 79, 5,
+#         9, 11, 68, 19, 7, 13, 20, 79, 8, 14, 9, 1, 71, 8, 13, 17, 10, 23, 71, 3, 13, 0, 7, 16, 71, 27, 11, 71, 10, 18,
+#         2, 29, 29, 8, 1, 1, 73, 79, 81, 71, 59, 12, 2, 79, 8, 14, 8, 12, 19, 79, 23, 15, 6, 10, 2, 28, 68, 19, 7, 22, 8,
+#         26, 3, 15, 79, 16, 15, 10, 68, 3, 14, 22, 12, 1, 1, 20, 28, 72, 71, 14, 10, 3, 79, 16, 15, 10, 68, 3, 14, 22,
+#         12, 1, 1, 20, 28, 68, 4, 14, 10, 71, 1, 1, 17, 10, 22, 71, 10, 28, 19, 6, 10, 0, 26, 13, 20, 7, 68, 14, 27, 74,
+#         71, 89, 68, 32, 0, 0, 71, 28, 1, 9, 27, 68, 45, 0, 12, 9, 79, 16, 15, 10, 68, 37, 14, 20, 19, 6, 23, 19, 79, 83,
+#         71, 27, 11, 71, 27, 1, 11, 3, 68, 2, 25, 1, 21, 22, 11, 9, 10, 68, 6, 13, 11, 18, 27, 68, 19, 7, 1, 71, 3, 13,
+#         0, 7, 16, 71, 28, 11, 71, 27, 12, 6, 27, 68, 2, 25, 1, 21, 22, 11, 9, 10, 68, 10, 6, 3, 15, 27, 68, 5, 10, 8,
+#         14, 10, 18, 2, 79, 6, 2, 12, 5, 18, 28, 1, 71, 0, 2, 71, 7, 13, 20, 79, 16, 2, 28, 16, 14, 2, 11, 9, 22, 74, 71,
+#         87, 68, 45, 0, 12, 9, 79, 12, 14, 2, 23, 2, 3, 2, 71, 24, 5, 20, 79, 10, 8, 27, 68, 19, 7, 1, 71, 3, 13, 0, 7,
+#         16, 92, 79, 12, 2, 79, 19, 6, 28, 68, 8, 1, 8, 30, 79, 5, 71, 24, 13, 19, 1, 1, 20, 28, 68, 19, 0, 68, 19, 7, 1,
+#         71, 3, 13, 0, 7, 16, 73, 79, 93, 71, 59, 12, 2, 79, 11, 9, 10, 68, 16, 7, 11, 71, 6, 23, 71, 27, 12, 2, 79, 16,
+#         21, 26, 1, 71, 3, 13, 0, 7, 16, 75, 79, 19, 15, 0, 68, 0, 6, 18, 2, 28, 68, 11, 6, 3, 15, 27, 68, 19, 0, 68, 2,
+#         25, 1, 21, 22, 11, 9, 10, 72, 71, 24, 5, 20, 79, 3, 8, 6, 10, 0, 79, 16, 8, 79, 7, 8, 2, 1, 71, 6, 10, 19, 0,
+#         68, 19, 7, 1, 71, 24, 11, 21, 3, 0, 73, 79, 85, 87, 79, 38, 18, 27, 68, 6, 3, 16, 15, 0, 17, 0, 7, 68, 19, 7, 1,
+#         71, 24, 11, 21, 3, 0, 71, 24, 5, 20, 79, 9, 6, 11, 1, 71, 27, 12, 21, 0, 17, 0, 7, 68, 15, 6, 9, 75, 79, 16, 15,
+#         10, 68, 16, 0, 22, 11, 11, 68, 3, 6, 0, 9, 72, 16, 71, 29, 1, 4, 0, 3, 9, 6, 30, 2, 79, 12, 14, 2, 68, 16, 7, 1,
+#         9, 79, 12, 2, 79, 7, 6, 2, 1, 73, 79, 85, 86, 79, 33, 17, 10, 10, 71, 6, 10, 71, 7, 13, 20, 79, 11, 16, 1, 68,
+#         11, 14, 10, 3, 79, 5, 9, 11, 68, 6, 2, 11, 9, 8, 68, 15, 6, 23, 71, 0, 19, 9, 79, 20, 2, 0, 20, 11, 10, 72, 71,
+#         7, 1, 71, 24, 5, 20, 79, 10, 8, 27, 68, 6, 12, 7, 2, 31, 16, 2, 11, 74, 71, 94, 86, 71, 45, 17, 19, 79, 16, 8,
+#         79, 5, 11, 3, 68, 16, 7, 11, 71, 13, 1, 11, 6, 1, 17, 10, 0, 71, 7, 13, 10, 79, 5, 9, 11, 68, 6, 12, 7, 2, 31,
+#         16, 2, 11, 68, 15, 6, 9, 75, 79, 12, 2, 79, 3, 6, 25, 1, 71, 27, 12, 2, 79, 22, 14, 8, 12, 19, 79, 16, 8, 79, 6,
+#         2, 12, 11, 10, 10, 68, 4, 7, 13, 11, 11, 22, 2, 1, 68, 8, 9, 68, 32, 0, 0, 73, 79, 85, 84, 79, 48, 15, 10, 29,
+#         71, 14, 22, 2, 79, 22, 2, 13, 11, 21, 1, 69, 71, 59, 12, 14, 28, 68, 14, 28, 68, 9, 0, 16, 71, 14, 68, 23, 7,
+#         29, 20, 6, 7, 6, 3, 68, 5, 6, 22, 19, 7, 68, 21, 10, 23, 18, 3, 16, 14, 1, 3, 71, 9, 22, 8, 2, 68, 15, 26, 9, 6,
+#         1, 68, 23, 14, 23, 20, 6, 11, 9, 79, 11, 21, 79, 20, 11, 14, 10, 75, 79, 16, 15, 6, 23, 71, 29, 1, 5, 6, 22, 19,
+#         7, 68, 4, 0, 9, 2, 28, 68, 1, 29, 11, 10, 79, 35, 8, 11, 74, 86, 91, 68, 52, 0, 68, 19, 7, 1, 71, 56, 11, 21,
+#         11, 68, 5, 10, 7, 6, 2, 1, 71, 7, 17, 10, 14, 10, 71, 14, 10, 3, 79, 8, 14, 25, 1, 3, 79, 12, 2, 29, 1, 71, 0,
+#         10, 71, 10, 5, 21, 27, 12, 71, 14, 9, 8, 1, 3, 71, 26, 23, 73, 79, 44, 2, 79, 19, 6, 28, 68, 1, 26, 8, 11, 79,
+#         11, 1, 79, 17, 9, 9, 5, 14, 3, 13, 9, 8, 68, 11, 0, 18, 2, 79, 5, 9, 11, 68, 1, 14, 13, 19, 7, 2, 18, 3, 10, 2,
+#         28, 23, 73, 79, 37, 9, 11, 68, 16, 10, 68, 15, 14, 18, 2, 79, 23, 2, 10, 10, 71, 7, 13, 20, 79, 3, 11, 0, 22,
+#         30, 67, 68, 19, 7, 1, 71, 8, 8, 8, 29, 29, 71, 0, 2, 71, 27, 12, 2, 79, 11, 9, 3, 29, 71, 60, 11, 9, 79, 11, 1,
+#         79, 16, 15, 10, 68, 33, 14, 16, 15, 10, 22, 73]
+#
+# mess[::3] = list(map(lambda c: chr(c ^ 103), mess[::3]))
+# mess[1::3] = list(map(lambda c: chr(c ^ 111), mess[1::3]))
+# mess[2::3] = list(map(lambda c: chr(c ^ 100), mess[2::3]))
+# print(mess)
+# print(sum([ord(c) for c in mess]))
+
+
+from itertools import combinations, permutations
+
+primes = get_primes_on_interval(0, 1000000)
+
+def check(ls):
+    for pair in ls:
+        if not int(str(pair[0]) + str(pair[1])) in primes:
+            return False
+    return True
+
+
+min = 1000000
+for l in combinations(get_primes_on_interval(0, 1000), 5):
+    if check(permutations(l, 2)):
+        s = sum(l)
+        if l < min:
+            min = l
+
+print(min)
