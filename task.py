@@ -1343,21 +1343,143 @@ class Spiral():
 
 
 from itertools import combinations, permutations
-
-primes = get_primes_on_interval(0, 1000000)
-
-def check(ls):
-    for pair in ls:
-        if not int(str(pair[0]) + str(pair[1])) in primes:
-            return False
-    return True
+from collections import OrderedDict
+import operator
+import pickle
+import yaml
 
 
-min = 1000000
-for l in combinations(get_primes_on_interval(0, 1000), 5):
-    if check(permutations(l, 2)):
-        s = sum(l)
-        if l < min:
-            min = l
+def _get_match(small, big):
+    print(big)
+    if big.startswith(small):
+        offset = big.replace(small, "", 1)
+        if offset in primes_str and offset + small in primes_str:
+            return offset
+    elif big.endswith(small):
+        offset = big.replace(small, "", 1)
+        if offset in primes_str and small + offset in primes_str:
+            return offset
 
-print(min)
+
+set_size = 4
+
+
+def _print():
+    for item in deps_read.items():
+        print(item[0], ":", sep='', end=' ')
+        print(item[1])
+
+
+# primes = get_primes_on_interval(3, 100000000)
+# print('Got primes')
+# primes_str = list(map(str, primes))
+# print('Got str primes')
+#
+# with open('primes.yaml', 'wb') as f:
+#     pickle.dump(primes_str, f)
+
+with open('primes.yaml', 'rb') as ff:
+    primes_str = pickle.load(ff)
+print("UNPICKLED")
+
+deps = OrderedDict()
+for small in primes_str[:primes_str.index('10007')]:
+    print(small)
+    outcome = set(_get_match(small, big) for big in primes_str[primes_str.index(small):])
+    outcome.add(small)
+    outcome.remove(None)
+    if len(outcome) >= set_size - 1:
+        deps[small] = outcome
+
+# prime_leaving_occurences = list(filter(
+#     lambda x: (x.startswith(prime) or x.endswith(prime)) and x.replace(prime, "", 1) in primes_str,
+#     primes_str))
+
+with open('deps_long.yaml', 'w') as f:
+    f.write(yaml.dump(deps))
+
+with open('deps_long.yaml', 'r') as ff:
+    deps_read = yaml.load(ff)
+
+# print(sorted(set(map(lambda x: x.replace(item[0], "", 1), item[1])), key=int))
+
+# print(len(deps_read))
+# q = dict()
+# for l in deps_read.values():
+#     for num in l:
+#         if num not in q:
+#             q[num] = 0
+#         q[num] += 1
+#
+# for k in q:
+#     if q[k] < set_size and k in deps_read:
+#         del deps_read[k]
+# print(len(deps_read))
+#
+# deps_read = OrderedDict(sorted(deps_read.items(), key=lambda x: q[x[0]]))
+#
+# for item in deps_read.items():
+#     print(q[item[0]], ' ', item[0], ":", sep='', end=' ')
+#     print(item[1])
+#
+# print()
+# print()
+# print()
+#
+for key, value in deps_read.items():
+    value_copy = set(value)
+    for v in value_copy:
+        if v not in deps_read:
+            deps_read[key].remove(v)
+
+
+def _get_intersection(ids):
+    d = deps_read[ids[0]]
+    for s in ids[1:]:
+        d = d.intersection(deps_read[s])
+    return d
+
+
+def _remove_num(n):
+    deps_read[n] = set()
+    for key, value in deps_read.items():
+        if n in value:
+            deps_read[key].remove(n)
+
+
+keys_found = []
+for key, value in deps_read.items():
+    should_delete = True
+    for c in combinations(value, set_size):
+        if set(c).issubset(_get_intersection(c)):
+            should_delete = False
+    if should_delete:
+        _remove_num(key)
+    else:
+        keys_found.append(key)
+
+print(sum(min((tuple(sorted(map(int, deps_read[key]))) for key in keys_found), key=min)))
+
+
+# for key, value in deps_read.items():
+#     print(key, end=': ')
+#     d = set()
+#     for k in value:
+#         if not d:
+#             d = deps_read[k]
+#         d = d.intersection(deps_read[k])
+#     print(d)
+
+
+# for candidate in combinations(deps_read.items(), set_size):
+#     nums = {candidate[0][0]}
+#     outcomes = set(candidate[0][1])
+#     for c in candidate[1:]:
+#         nums.add(c[0])
+#         outcomes = outcomes.intersection(c[1])
+#     # if outcomes:
+#     #     print(nums)
+#     #     print(outcomes)
+#     #     print()
+#     if nums.issubset(outcomes):
+#         print(sum(map(int, nums)), nums)
