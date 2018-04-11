@@ -1342,125 +1342,124 @@ class Spiral():
 # print(sum([ord(c) for c in mess]))
 
 
-from itertools import combinations, permutations
-from collections import OrderedDict
-import operator
-import pickle
-import yaml
+# from itertools import combinations, permutations
+# from collections import OrderedDict
+# import operator
+# import pickle
+# import yaml
 
 
-def _get_match(small, big):
-    print(big)
-    if big.startswith(small):
-        offset = big.replace(small, "", 1)
-        if offset in primes_str and offset + small in primes_str:
-            return offset
-    elif big.endswith(small):
-        offset = big.replace(small, "", 1)
-        if offset in primes_str and small + offset in primes_str:
-            return offset
-
-
-set_size = 4
-
-
-def _print():
-    for item in deps_read.items():
-        print(item[0], ":", sep='', end=' ')
-        print(item[1])
-
-
-# primes = get_primes_on_interval(3, 100000000)
+# def _get_match(small, big):
+#     print(small, big)
+#     if big.startswith(small):
+#         offset = big.replace(small, "", 1)
+#         if offset in primes_str and offset + small in primes_str:
+#             return offset
+#     elif big.endswith(small):
+#         offset = big.replace(small, "", 1)
+#         if offset in primes_str and small + offset in primes_str:
+#             return offset
+#
+#
+# set_size = 4
+#
+#
+# def _print():
+#     for item in deps_read.items():
+#         print(item[0], ":", sep='', end=' ')
+#         print(item[1])
+#
+#
+# primes = get_primes_on_interval(3, 1000000)
 # print('Got primes')
 # primes_str = list(map(str, primes))
 # print('Got str primes')
+# #
+# # with open('primes.yaml', 'wb') as f:
+# #     pickle.dump(primes_str, f)
 #
-# with open('primes.yaml', 'wb') as f:
-#     pickle.dump(primes_str, f)
-
-with open('primes.yaml', 'rb') as ff:
-    primes_str = pickle.load(ff)
-print("UNPICKLED")
-
-deps = OrderedDict()
-for small in primes_str[:primes_str.index('10007')]:
-    print(small)
-    outcome = set(_get_match(small, big) for big in primes_str[primes_str.index(small):])
-    outcome.add(small)
-    outcome.remove(None)
-    if len(outcome) >= set_size - 1:
-        deps[small] = outcome
-
-# prime_leaving_occurences = list(filter(
-#     lambda x: (x.startswith(prime) or x.endswith(prime)) and x.replace(prime, "", 1) in primes_str,
-#     primes_str))
-
-with open('deps_long.yaml', 'w') as f:
-    f.write(yaml.dump(deps))
-
-with open('deps_long.yaml', 'r') as ff:
-    deps_read = yaml.load(ff)
-
-# print(sorted(set(map(lambda x: x.replace(item[0], "", 1), item[1])), key=int))
-
-# print(len(deps_read))
-# q = dict()
-# for l in deps_read.values():
-#     for num in l:
-#         if num not in q:
-#             q[num] = 0
-#         q[num] += 1
+# # with open('primes.yaml', 'rb') as ff:
+# #     primes_str = pickle.load(ff)
+# # print("UNPICKLED")
 #
-# for k in q:
-#     if q[k] < set_size and k in deps_read:
-#         del deps_read[k]
-# print(len(deps_read))
+# deps = OrderedDict()
+# for small in primes_str[:primes_str.index('677')]:
+#     outcome = set(_get_match(small, big) for big in primes_str[primes_str.index(small):])
+#     outcome.add(small)
+#     outcome.remove(None)
+#     if len(outcome) >= set_size - 1:
+#         deps[small] = outcome
 #
-# deps_read = OrderedDict(sorted(deps_read.items(), key=lambda x: q[x[0]]))
+# # prime_leaving_occurences = list(filter(
+# #     lambda x: (x.startswith(prime) or x.endswith(prime)) and x.replace(prime, "", 1) in primes_str,
+# #     primes_str))
 #
-# for item in deps_read.items():
-#     print(q[item[0]], ' ', item[0], ":", sep='', end=' ')
-#     print(item[1])
+# with open('deps_long.yaml', 'w') as f:
+#     f.write(yaml.dump(deps))
 #
-# print()
-# print()
-# print()
+# with open('deps_long.yaml', 'r') as ff:
+#     deps_read = yaml.load(ff)
 #
-for key, value in deps_read.items():
-    value_copy = set(value)
-    for v in value_copy:
-        if v not in deps_read:
-            deps_read[key].remove(v)
-
-
-def _get_intersection(ids):
-    d = deps_read[ids[0]]
-    for s in ids[1:]:
-        d = d.intersection(deps_read[s])
-    return d
-
-
-def _remove_num(n):
-    deps_read[n] = set()
-    for key, value in deps_read.items():
-        if n in value:
-            deps_read[key].remove(n)
-
-
-keys_found = []
-for key, value in deps_read.items():
-    should_delete = True
-    for c in combinations(value, set_size):
-        if set(c).issubset(_get_intersection(c)):
-            should_delete = False
-    if should_delete:
-        _remove_num(key)
-    else:
-        keys_found.append(key)
-
-print(sum(min((tuple(sorted(map(int, deps_read[key]))) for key in keys_found), key=min)))
-
-
+# # print(sorted(set(map(lambda x: x.replace(item[0], "", 1), item[1])), key=int))
+#
+# # print(len(deps_read))
+# # q = dict()
+# # for l in deps_read.values():
+# #     for num in l:
+# #         if num not in q:
+# #             q[num] = 0
+# #         q[num] += 1
+# #
+# # for k in q:
+# #     if q[k] < set_size and k in deps_read:
+# #         del deps_read[k]
+# # print(len(deps_read))
+# #
+# # deps_read = OrderedDict(sorted(deps_read.items(), key=lambda x: q[x[0]]))
+# #
+# # for item in deps_read.items():
+# #     print(q[item[0]], ' ', item[0], ":", sep='', end=' ')
+# #     print(item[1])
+# #
+# # print()
+# # print()
+# # print()
+# #
+# for key, value in deps_read.items():
+#     value_copy = set(value)
+#     for v in value_copy:
+#         if v not in deps_read:
+#             deps_read[key].remove(v)
+#
+#
+# def _get_intersection(ids):
+#     d = deps_read[ids[0]]
+#     for s in ids[1:]:
+#         d = d.intersection(deps_read[s])
+#     return d
+#
+#
+# def _remove_num(n):
+#     deps_read[n] = set()
+#     for key, value in deps_read.items():
+#         if n in value:
+#             deps_read[key].remove(n)
+#
+#
+# keys_found = []
+# for key, value in deps_read.items():
+#     should_delete = True
+#     for c in combinations(value, set_size):
+#         if set(c).issubset(_get_intersection(c)):
+#             should_delete = False
+#     if should_delete:
+#         _remove_num(key)
+#     else:
+#         keys_found.append(key)
+#
+# print(sum(min((tuple(sorted(map(int, deps_read[key]))) for key in keys_found), key=min)))
+#
+#
 # for key, value in deps_read.items():
 #     print(key, end=': ')
 #     d = set()
@@ -1469,8 +1468,8 @@ print(sum(min((tuple(sorted(map(int, deps_read[key]))) for key in keys_found), k
 #             d = deps_read[k]
 #         d = d.intersection(deps_read[k])
 #     print(d)
-
-
+#
+#
 # for candidate in combinations(deps_read.items(), set_size):
 #     nums = {candidate[0][0]}
 #     outcomes = set(candidate[0][1])
@@ -1483,3 +1482,228 @@ print(sum(min((tuple(sorted(map(int, deps_read[key]))) for key in keys_found), k
 #     #     print()
 #     if nums.issubset(outcomes):
 #         print(sum(map(int, nums)), nums)
+
+from collections import OrderedDict
+from itertools import combinations
+
+set_size = 5
+max_prime = 1000000
+max_looking_for = int(math.sqrt(max_prime))
+
+primes = get_primes_on_interval(3, max_prime)
+print(primes)
+print(len(primes))
+# primes_str = list(map(str, primes))
+# print('Got primes')
+#
+# deps = {}
+# s = 10000
+# for p in primes_str:
+#     if int(p) > s:
+#         print(p)
+#         s += 10000
+#     for sep in range(1, len(p)):
+#         left = p[:sep]
+#         if left in primes_str:
+#             right = p[sep:]
+#             if right in primes_str:
+#                 if right + left in primes_str:
+#                     v1 = int(left)
+#                     v2 = int(right)
+#                     if v1 <= max_looking_for and v2 <= max_looking_for:
+#                         if v1 not in deps:
+#                             deps[v1] = {v1}
+#                         if v2 not in deps:
+#                             deps[v2] = {v2}
+#                         deps[v1].add(v2)
+#                         deps[v2].add(v1)
+
+# deps = OrderedDict(sorted(deps.items()))
+# print('{')
+# for key in deps:
+#     print(key, deps[key], sep=': ', end=', \n')
+# print('}')
+
+deps = {
+    3: {3, 7, 137, 11, 271, 17, 541, 31, 673, 929, 37, 557, 947, 823, 59, 701, 191, 449, 67, 73, 331, 719, 467, 733,
+        607, 739, 229, 613, 359, 617, 109, 499, 373},
+    7: {3, 7, 523, 19, 283, 541, 673, 547, 937, 433, 691, 823, 829, 61, 853, 97, 229, 487, 109, 883, 757, 127},
+    11: {353, 3, 743, 839, 11, 587, 941, 239, 113, 23, 503, 953, 251, 701, 863},
+    13: {577, 709, 997, 103, 331, 523, 13, 367, 241, 337, 19, 61, 829, 127},
+    17: {257, 449, 3, 389, 491, 971, 239, 431, 17, 881, 83, 383},
+    19: {577, 97, 163, 709, 997, 7, 937, 13, 79, 433, 19, 181, 727, 571, 31, 991},
+    23: {89, 509, 773, 677, 743, 11, 47, 23, 761, 827, 311},
+    29: {71, 167, 137, 683, 569, 401, 881, 179, 599, 761, 347, 29, 383},
+    31: {3, 139, 907, 19, 181, 151, 859, 31, 991},
+    37: {3, 67, 37, 967, 199, 607, 79, 463, 277, 313, 991},
+    41: {257, 227, 41, 911, 719, 593, 887, 863},
+    43: {97, 613, 103, 43, 271, 499, 691, 223},
+    47: {419, 293, 521, 269, 47, 947, 149, 23, 251},
+    53: {353, 419, 197, 269, 653, 113, 401, 53},
+    59: {929, 3, 419, 197, 167, 971, 59},
+    61: {487, 7, 331, 13, 751, 151, 409, 61},
+    67: {547, 67, 3, 37, 139, 619, 751, 757, 601, 157},
+    71: {257, 389, 71, 263, 233, 971, 719, 29, 947, 821, 887, 443, 317},
+    73: {547, 3, 643, 73, 277, 757, 823, 571, 607},
+    79: {193, 613, 37, 967, 397, 79, 367, 241, 19, 631},
+    83: {449, 227, 773, 911, 719, 17, 83, 563, 311, 443, 701},
+    89: {293, 137, 521, 107, 809, 431, 977, 23, 821, 983, 89, 443},
+    97: {97, 967, 7, 43, 241, 19, 787, 373, 883, 919, 157, 379, 829},
+    101: {641, 101, 197, 359, 107, 719, 467, 149, 383},
+    103: {997, 421, 103, 43, 13, 307},
+    107: {89, 449, 101, 107, 857},
+    109: {673, 3, 7, 199, 139, 109, 883, 661, 919, 313, 859},
+    113: {131, 227, 647, 167, 233, 11, 113, 53, 149, 983, 761, 383},
+    127: {163, 7, 331, 13, 271, 241, 373, 157, 601, 127, 733, 607},
+    131: {449, 641, 131, 839, 743, 617, 941, 113, 797, 479},
+    137: {353, 3, 197, 743, 359, 137, 491, 587, 239, 659, 947, 89, 29, 191},
+    139: {547, 67, 709, 967, 457, 139, 619, 109, 907, 367, 787, 661, 31},
+    149: {101, 491, 971, 173, 47, 113, 563, 149, 953, 251},
+    151: {769, 163, 937, 397, 433, 499, 631, 151, 31, 61, 607},
+    157: {97, 67, 229, 181, 277, 157, 571, 733, 127},
+    163: {193, 163, 613, 997, 811, 367, 19, 307, 883, 151, 409, 127},
+    167: {641, 677, 167, 521, 59, 491, 269, 911, 113, 443, 29},
+    173: {293, 743, 173, 431, 659, 149, 347, 191},
+    179: {743, 269, 719, 593, 179, 953, 317, 29, 383},
+    181: {193, 421, 199, 619, 397, 751, 19, 499, 181, 757, 787, 283, 31, 157, 607},
+    191: {3, 227, 281, 137, 173, 461, 977, 599, 953, 251, 191},
+    193: {577, 193, 163, 811, 79, 751, 433, 883, 181, 373, 601, 283, 541},
+    197: {641, 197, 101, 137, 59, 971, 947, 53, 311, 569, 347},
+    199: {673, 739, 37, 199, 811, 109, 877, 751, 211, 181, 373, 379},
+    211: {199, 271, 211, 499, 373, 727, 313, 283, 349, 571},
+    223: {547, 229, 43, 337, 277, 919, 829, 223},
+    227: {227, 41, 719, 593, 113, 83, 281, 827, 191},
+    229: {547, 3, 613, 229, 7, 937, 433, 499, 373, 631, 157, 223},
+    233: {71, 233, 617, 911, 239, 113, 881, 251, 983, 347},
+    239: {641, 929, 263, 137, 233, 11, 461, 239, 17, 977, 947, 347, 509},
+    241: {97, 739, 421, 313, 727, 811, 13, 79, 271, 241, 691, 883, 823, 601, 127},
+    251: {233, 11, 971, 941, 491, 47, 431, 251, 149, 761, 347, 191},
+    257: {257, 293, 263, 71, 41, 17},
+    263: {257, 293, 647, 263, 71, 941, 239, 821, 761, 443},
+    269: {389, 167, 617, 461, 269, 47, 431, 179, 53, 887, 317},
+    271: {3, 43, 271, 241, 211, 409, 127},
+    277: {37, 73, 331, 751, 499, 787, 277, 859, 157, 223},
+    281: {509, 227, 419, 281, 971, 557, 653, 719, 857, 797, 191},
+    283: {193, 487, 7, 397, 463, 211, 181, 601, 283, 541},
+    293: {257, 293, 263, 617, 173, 47, 467, 311, 89, 827},
+    307: {577, 163, 103, 523, 367, 307, 631, 733},
+    311: {197, 677, 293, 359, 653, 881, 83, 821, 23, 827, 311},
+    313: {37, 619, 109, 241, 211, 727, 313, 991},
+    317: {353, 419, 503, 773, 71, 269, 179, 983, 317},
+    331: {577, 3, 739, 937, 331, 907, 13, 883, 61, 277, 349, 127},
+    337: {223, 13, 397, 337, 691, 919, 349, 607},
+    347: {197, 233, 173, 239, 401, 347, 443, 983, 251, 29},
+    349: {709, 967, 331, 337, 211, 499, 373, 919, 409, 349, 829},
+    353: {353, 359, 317, 137, 11, 53, 443, 797},
+    359: {353, 509, 3, 101, 359, 137, 911, 311, 563, 599, 701},
+    367: {163, 613, 457, 139, 13, 79, 367, 751, 307},
+    373: {97, 193, 3, 229, 199, 937, 211, 373, 661, 823, 859, 349, 127},
+    379: {97, 997, 199, 811, 397, 877, 751, 379},
+    383: {419, 101, 941, 17, 113, 179, 29, 821, 797, 383},
+    389: {389, 71, 971, 269, 17, 947, 761, 797},
+    397: {673, 547, 907, 397, 79, 283, 337, 181, 151, 379},
+    401: {743, 809, 593, 401, 53, 887, 347, 29},
+    409: {163, 709, 271, 61, 691, 409, 349, 733},
+    419: {449, 929, 419, 317, 59, 47, 563, 53, 599, 281, 443, 701, 383},
+    421: {643, 709, 421, 103, 241, 433, 181, 661, 607},
+    431: {89, 929, 269, 173, 431, 17, 947, 983, 857, 251, 479},
+    433: {193, 229, 421, 7, 433, 19, 787, 883, 151, 571, 859},
+    439: {613, 787, 853, 661, 439, 601, 541},
+    443: {89, 353, 419, 263, 71, 167, 83, 761, 443, 983, 953, 347, 701},
+    449: {449, 3, 131, 419, 107, 557, 941, 17, 83, 563, 821},
+    457: {673, 643, 457, 139, 367, 757, 829},
+    461: {677, 479, 461, 269, 239, 653, 983, 569, 191},
+    463: {643, 37, 613, 523, 463, 283, 829},
+    467: {641, 3, 101, 293, 617, 587, 941, 467},
+    479: {131, 971, 461, 431, 593, 881, 821, 599, 569, 701, 479},
+    487: {769, 487, 7, 757, 727, 601, 283, 61},
+    491: {773, 167, 137, 491, 653, 17, 593, 149, 983, 251},
+    499: {673, 3, 229, 43, 499, 211, 181, 277, 151, 691, 349},
+    503: {647, 11, 653, 911, 563, 503, 317},
+    509: {509, 647, 359, 239, 947, 23, 281, 797, 863},
+    521: {641, 167, 809, 521, 557, 47, 659, 89},
+    523: {577, 7, 523, 13, 463, 307, 541},
+    541: {193, 439, 3, 7, 523, 283, 661, 727, 571, 541, 991},
+    547: {577, 769, 67, 547, 229, 643, 7, 709, 73, 139, 397, 787, 661, 853, 823, 223},
+    557: {449, 3, 521, 557, 281},
+    563: {449, 419, 359, 809, 587, 971, 83, 563, 149, 503},
+    569: {773, 197, 809, 461, 29, 659, 887, 569, 797, 479},
+    571: {73, 433, 19, 211, 853, 157, 571, 541},
+    577: {577, 193, 547, 613, 937, 331, 523, 13, 19, 307, 757},
+    587: {677, 137, 617, 587, 11, 467, 563},
+    593: {227, 647, 41, 479, 491, 593, 401, 179, 977, 863},
+    599: {191, 419, 359, 941, 719, 599, 29, 479},
+    601: {193, 439, 67, 487, 241, 823, 601, 283, 127},
+    607: {3, 37, 421, 967, 73, 619, 337, 181, 151, 991, 127, 607},
+    613: {577, 673, 3, 163, 613, 229, 43, 79, 367, 463, 883, 661, 439, 829},
+    617: {3, 131, 293, 647, 617, 233, 587, 269, 887, 467, 983},
+    619: {67, 619, 811, 139, 181, 313, 607},
+    631: {739, 229, 751, 79, 307, 631, 151},
+    641: {641, 929, 131, 101, 197, 167, 521, 239, 881, 467, 821, 863},
+    643: {547, 643, 421, 73, 457, 463, 751, 991},
+    647: {647, 263, 617, 593, 113, 821, 503, 953, 509},
+    653: {491, 941, 461, 653, 659, 53, 503, 281, 311},
+    659: {137, 521, 173, 653, 659, 947, 983, 569},
+    661: {769, 547, 613, 421, 139, 109, 877, 883, 373, 661, 439, 541},
+    673: {673, 769, 3, 613, 199, 7, 457, 109, 397, 499},
+    677: {677, 167, 587, 461, 23, 827, 311},
+    683: {719, 683, 29, 911},
+    691: {709, 7, 727, 43, 907, 337, 241, 691, 499, 919, 409},
+    701: {3, 419, 359, 11, 83, 443, 701, 479},
+    709: {547, 709, 421, 967, 139, 13, 19, 691, 823, 409, 349},
+    719: {3, 227, 773, 101, 71, 41, 683, 719, 911, 83, 179, 947, 599, 281},
+    727: {997, 487, 727, 241, 19, 211, 691, 823, 313, 541},
+    733: {3, 733, 883, 307, 157, 409, 127, 829, 991},
+    739: {3, 739, 967, 199, 331, 751, 241, 853, 631},
+    743: {131, 743, 137, 11, 173, 401, 881, 179, 947, 23},
+    751: {193, 67, 643, 997, 739, 199, 751, 367, 787, 181, 277, 631, 379, 61},
+    757: {577, 67, 487, 7, 73, 457, 811, 181, 757, 829},
+    761: {389, 263, 251, 113, 977, 23, 761, 443, 29},
+    769: {769, 673, 547, 997, 487, 661, 919, 151},
+    773: {773, 491, 719, 83, 23, 569, 953, 317},
+    787: {97, 439, 547, 139, 751, 433, 787, 277, 181, 823},
+    797: {353, 131, 389, 281, 797, 569, 509, 383},
+    809: {89, 929, 839, 809, 521, 401, 563, 821, 983, 569, 827},
+    811: {193, 163, 997, 199, 811, 619, 241, 757, 919, 379, 991},
+    821: {89, 449, 641, 647, 71, 263, 809, 971, 383, 821, 311, 857, 827, 479},
+    823: {547, 3, 709, 967, 7, 73, 877, 823, 241, 787, 373, 727, 601},
+    827: {227, 293, 677, 809, 821, 23, 857, 827, 311},
+    829: {97, 613, 7, 457, 829, 13, 463, 757, 349, 733, 223},
+    839: {131, 839, 809, 11, 911, 887},
+    853: {547, 739, 7, 853, 439, 571},
+    857: {281, 107, 431, 821, 857, 827},
+    859: {109, 433, 373, 277, 919, 859, 31},
+    863: {641, 41, 11, 593, 983, 509, 863},
+    877: {997, 199, 937, 877, 883, 661, 823, 379},
+    881: {641, 743, 233, 17, 881, 29, 983, 953, 311, 479},
+    883: {97, 193, 163, 613, 7, 331, 109, 877, 241, 433, 883, 661, 733, 991},
+    887: {839, 71, 41, 617, 269, 401, 887, 569},
+    907: {331, 907, 139, 397, 691, 31},
+    911: {359, 167, 41, 233, 683, 839, 911, 719, 83, 947, 503},
+    919: {97, 769, 937, 811, 109, 337, 691, 919, 859, 349, 223},
+    929: {929, 641, 3, 419, 809, 941, 239, 431, 983, 953, 59},
+    937: {577, 229, 7, 937, 331, 877, 19, 373, 919, 151},
+    941: {449, 929, 131, 263, 11, 941, 653, 467, 599, 251, 383},
+    947: {3, 197, 389, 743, 71, 137, 47, 239, 431, 719, 947, 659, 911, 509},
+    953: {929, 773, 647, 11, 881, 179, 149, 953, 443, 191},
+    967: {97, 739, 709, 37, 967, 139, 79, 823, 349, 607},
+    971: {197, 389, 71, 59, 971, 17, 977, 563, 149, 821, 281, 251, 479},
+    977: {89, 971, 239, 593, 977, 761, 191},
+    983: {929, 233, 617, 491, 809, 461, 431, 113, 881, 659, 347, 983, 89, 443, 317, 863},
+    991: {541, 643, 37, 811, 19, 883, 313, 991, 31, 733, 607},
+    997: {769, 163, 997, 103, 811, 13, 877, 751, 19, 727, 379},
+}
+
+sums = []
+keys = deps.keys()
+for candidate in combinations(keys, set_size):
+    out = deps[candidate[0]].intersection(deps[candidate[1]])
+    for key in candidate[2:]:
+        out = out.intersection(deps[key])
+    if len(out) == set_size:
+        s = sum(out)
+        print(candidate, out, s)
+        sums.append(s)
+
+print()
+print("Min sum: {}".format(min(sums)))
